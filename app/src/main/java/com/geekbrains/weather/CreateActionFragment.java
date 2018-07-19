@@ -12,10 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -33,12 +33,11 @@ public class CreateActionFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Toast.makeText(getContext(), "onAttachAction", Toast.LENGTH_SHORT).show();
 
         try {
-            mCallback = (OnHeadlineSelectedListener) getBaseActivity().getAnotherFragment();
+            mCallback = getBaseActivity();
         } catch (ClassCastException e) {
-            throw new ClassCastException(getBaseActivity().getAnotherFragment().toString()
+            throw new ClassCastException(getBaseActivity().toString()
                     + " must implement OnHeadlineSelectedListener");
         }
     }
@@ -65,11 +64,11 @@ public class CreateActionFragment extends BaseFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        CustomAdapter customAdapter = new CustomAdapter(getContext(), cityList, mCallback);
+        final CustomAdapter customAdapter = new CustomAdapter(getContext(), cityList, mCallback);
         recyclerView.setAdapter(customAdapter);
 
         //инициализация edittext и листенер на ключи при взаимодействии с ним, когда мы нашимаем enter у нас опускается клавиатура и запускается WeatherFragment
-        editTextCountry = (EditText) view.findViewById(R.id.et_country);
+        editTextCountry = view.findViewById(R.id.et_country);
 
         editTextCountry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -82,12 +81,11 @@ public class CreateActionFragment extends BaseFragment {
                     } else
                         showError();
 
-//                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-//                    String country = editTextCountry.getText().toString().trim();
-//                    ArrayList<String> arrayList = new ArrayList<>();
-//                    arrayList.add(country);
-//                    mCallback.onArticleSelected(arrayList);
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    String city = editTextCountry.getText().toString().trim();
+                    getBaseActivity().getCollapsingToolbarLayout().setTitle(city);
+                    editTextCountry.setText("");
                     return true;
                 }
                 return false;

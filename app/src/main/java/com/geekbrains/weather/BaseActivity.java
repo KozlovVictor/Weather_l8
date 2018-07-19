@@ -3,6 +3,7 @@ package com.geekbrains.weather;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,22 +17,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-public class BaseActivity extends AppCompatActivity
-        implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener {
+import java.util.ArrayList;
 
-    private static final String TEXT = "TEXT";
-    private static String contry;
+public class BaseActivity extends AppCompatActivity
+        implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
+
+    private static final String NAME = "NAME";
+    private static final String CITIES = "CITIES";
+    private static String country;
+    private static String cities;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     //инициализация переменных
     private FloatingActionButton fab;
-    private TextView textView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         if (savedInstanceState != null) {
-            TextView tv = findViewById(R.id.tvUsername);
-            contry = savedInstanceState.getString("NAME");
+            country = savedInstanceState.getString(NAME);
+            cities = savedInstanceState.getString(CITIES);
         }
         setContentView(R.layout.activity_base);
 
@@ -39,10 +46,15 @@ public class BaseActivity extends AppCompatActivity
     }
 
 
+    public CollapsingToolbarLayout getCollapsingToolbarLayout() {
+        return collapsingToolbarLayout;
+    }
+
     private void initLayout() {
         //устанавливает тулбар
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         //устанавливаем drawer (выездное меню)
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         //анимация клавищи (три палочки сверху) выездного меня
@@ -55,6 +67,9 @@ public class BaseActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(cities);
+
 
         fab = findViewById(R.id.fab);
 
@@ -65,8 +80,8 @@ public class BaseActivity extends AppCompatActivity
             }
         });
 
-        //addFragment(new WeatherFragment());
-        startWeatherFragment(contry);
+
+        addFragment(WeatherFragment.newInstance(country));
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             addFragment1(new CreateActionFragment());
         }
@@ -77,6 +92,7 @@ public class BaseActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("NAME", ((TextView) findViewById(R.id.tvUsername)).getText().toString());
+        outState.putString("CITIES", cities);
         super.onSaveInstanceState(outState);
     }
 
@@ -86,7 +102,7 @@ public class BaseActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                //.addToBackStack("")
+                .addToBackStack("")
                 .commit();
     }
 
@@ -95,7 +111,7 @@ public class BaseActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_frame2, fragment)
-                //.addToBackStack("")
+                .addToBackStack("")
                 .commit();
     }
 
@@ -146,7 +162,6 @@ public class BaseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
-
         int id = item.getItemId();
 
         if (id == R.id.nav_settings) {
@@ -182,17 +197,22 @@ public class BaseActivity extends AppCompatActivity
     }
 
 
-    public void startWeatherFragment(String country) {
+    /*public void startWeatherFragment(String country) {
         //запускаем WeatherFragment и передаем туда country
         addFragment(WeatherFragment.newInstance(country));
-        //cntry = country;
+        //country = country;
 
-
-    }
-
+    }*/
 
     public Fragment getAnotherFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
+    }
+
+    @Override
+    public void onArticleSelected(ArrayList<String> citiesList) {
+        String cities = citiesList.toString();
+        //textView.setText(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
+        collapsingToolbarLayout.setTitle(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
     }
 }

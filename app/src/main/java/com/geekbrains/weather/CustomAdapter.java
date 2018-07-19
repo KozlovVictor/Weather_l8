@@ -1,7 +1,6 @@
 package com.geekbrains.weather;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -59,20 +58,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             }
         });
 
-        if (cityList.get(position).equals("Moscow")) {
+        /*if (cityList.get(position).equals("Moscow")) {
             holder.cardView.setCardBackgroundColor(Color.RED);
-        }
+        }*/
 
     }
 
     @Override
     public int getItemCount() {
         return cityList.size();
-    }
-
-    public void setMoscowRed() {
-        cityList.add("Tula");
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-public class WeatherFragment extends BaseFragment implements CreateActionFragment.OnHeadlineSelectedListener {
+public class WeatherFragment extends BaseFragment {
 
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
     private String country;
-    private TextView textView;
 
     public WeatherFragment() {
 //        Особенностью поведения android-а состоит в том, что в любой момент
@@ -54,25 +51,9 @@ public class WeatherFragment extends BaseFragment implements CreateActionFragmen
 
     @Override
     protected void initLayout(View view, Bundle savedInstanceState) {
-        textView = view.findViewById(R.id.tv_country);
-
-        //проверяем нашу переменную если она не пустая показываем город, если наоборот - ничего не показываем
-        if (country != null && country.length() > 0) {
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(country);
-        } else {
-            textView.setVisibility(View.GONE);
-        }
 
         ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
         ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
 
-    }
-
-    @Override
-    public void onArticleSelected(ArrayList<String> citiesList) {
-        textView.setVisibility(View.VISIBLE);
-        String cities = citiesList.toString();
-        textView.setText(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
     }
 }
