@@ -61,6 +61,7 @@ public class CreateActionFragment extends BaseFragment {
         recyclerView = view.findViewById(R.id.list_view);
         recyclerView.setHasFixedSize(true);
 
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 

@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -137,6 +138,7 @@ public class BaseActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.base, menu);
 
+        //TODO add search action
         return true;
     }
 
@@ -146,11 +148,21 @@ public class BaseActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        switch (id) {
+            case R.id.action_settings:
+                //TODO add settings fragment
+                return true;
+            case R.id.action_help:
+                //TODO add help fragment
+                return true;
+        }
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_help) {
+            return true;
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
