@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -87,8 +86,8 @@ public class BaseActivity extends AppCompatActivity
             addFragment1(new CreateActionFragment());
         }
 
-
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
