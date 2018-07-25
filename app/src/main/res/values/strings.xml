@@ -24,4 +24,5 @@
     <string name="city">city</string>
     <string name="help">Help</string>
     <string name="feedback">Feedback</string>
+    <string name="search">Search</string>
 </resources>

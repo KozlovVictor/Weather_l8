@@ -1,12 +1,20 @@
 package com.geekbrains.weather;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +23,14 @@ import android.widget.TextView;
 
 import static android.content.Context.SENSOR_SERVICE;
 
-public class WeatherFragment extends BaseFragment {
+public class WeatherFragment extends BaseFragment implements LocationListener {
 
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
     private String country;
-    private SensorEventListener listenerLight;
     private SensorEventListener listenerTemperature;
     private SensorEventListener listenerHumidity;
     private SensorManager sensorManager;
+    private LocationManager locationManager;
 
 
     public WeatherFragment() {
@@ -69,6 +77,24 @@ public class WeatherFragment extends BaseFragment {
 //       ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
 //        ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
         initSensors();
+        initLocation();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void initLocation() {
+        locationManager = (LocationManager) getBaseActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(null, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 10, this);
 
     }
 
@@ -76,19 +102,6 @@ public class WeatherFragment extends BaseFragment {
         sensorManager = (SensorManager) getBaseActivity().getSystemService(SENSOR_SERVICE);
         Sensor temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         Sensor humiditySensor = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        Sensor lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        listenerLight = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText(sensorEvent.values[0] + " !!!");
-                Log.d("Sensors", "Light " + sensorEvent.values[0]);
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-
-            }
-        };
 
         listenerTemperature = new SensorEventListener() {
             @Override
@@ -103,6 +116,7 @@ public class WeatherFragment extends BaseFragment {
 
             }
         };
+
         listenerHumidity = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -117,7 +131,6 @@ public class WeatherFragment extends BaseFragment {
         };
         sensorManager.registerListener(listenerTemperature, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(listenerHumidity, humiditySensor, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(listenerLight, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -125,6 +138,25 @@ public class WeatherFragment extends BaseFragment {
         super.onPause();
         sensorManager.unregisterListener(listenerTemperature);
         sensorManager.unregisterListener(listenerHumidity);
-        sensorManager.unregisterListener(listenerLight);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 }
