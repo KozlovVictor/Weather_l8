@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import static android.content.Context.SENSOR_SERVICE;
 
-public class WeatherFragment extends BaseFragment implements LocationListener {
+public class WeatherFragment extends BaseFragment {
 
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
     private String country;
@@ -84,7 +84,8 @@ public class WeatherFragment extends BaseFragment implements LocationListener {
     @SuppressLint("MissingPermission")
     private void initLocation() {
         locationManager = (LocationManager) getBaseActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(null, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -94,7 +95,27 @@ public class WeatherFragment extends BaseFragment implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 10, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 10, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
 
     }
 
@@ -140,23 +161,4 @@ public class WeatherFragment extends BaseFragment implements LocationListener {
         sensorManager.unregisterListener(listenerHumidity);
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
 }
