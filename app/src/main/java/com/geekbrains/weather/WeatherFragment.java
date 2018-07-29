@@ -76,7 +76,6 @@ public class WeatherFragment extends BaseFragment {
 
 //       ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
 //        ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
-        initSensors();
         initLocation();
 
     }
@@ -117,48 +116,6 @@ public class WeatherFragment extends BaseFragment {
             }
         });
 
-    }
-
-    private void initSensors() {
-        sensorManager = (SensorManager) getBaseActivity().getSystemService(SENSOR_SERVICE);
-        Sensor temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        Sensor humiditySensor = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-
-        listenerTemperature = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-
-                ((TextView) getBaseActivity().findViewById(R.id.bigTemp)).setText((sensorEvent.values[0] + "C"));
-                Log.d("Sensors", "Tempersture" + sensorEvent.values[0]);
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-
-            }
-        };
-
-        listenerHumidity = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText((sensorEvent.values[0] + "%"));
-                Log.d("Sensors", "humidity" + sensorEvent.values[0]);
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-
-            }
-        };
-        sensorManager.registerListener(listenerTemperature, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(listenerHumidity, humiditySensor, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(listenerTemperature);
-        sensorManager.unregisterListener(listenerHumidity);
     }
 
 }

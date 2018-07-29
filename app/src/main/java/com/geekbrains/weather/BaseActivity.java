@@ -1,8 +1,12 @@
 package com.geekbrains.weather;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,10 +21,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.geekbrains.weather.service.SensorService;
+
 import java.util.ArrayList;
 
 public class BaseActivity extends AppCompatActivity
-        implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
+        implements SensorService.CallBack, BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
 
     private static final String NAME = "NAME";
     private static final String CITIES = "CITIES";
@@ -29,6 +35,9 @@ public class BaseActivity extends AppCompatActivity
     private CollapsingToolbarLayout collapsingToolbarLayout;
     //инициализация переменных
     private FloatingActionButton fab;
+
+    ServiceConnection serviceConnection;
+    SensorService sensorService;
 
 
     @Override
@@ -43,8 +52,22 @@ public class BaseActivity extends AppCompatActivity
         setContentView(R.layout.activity_base);
 
         initLayout();
-    }
 
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                sensorService = ((SensorService.SensorServiceBinder) iBinder).getService();
+                sensorService.registerClient(BaseActivity.this);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        };
+        bindService(new Intent(this, SensorService.class), serviceConnection, 0);
+
+    }
 
     public CollapsingToolbarLayout getCollapsingToolbarLayout() {
         return collapsingToolbarLayout;
@@ -226,5 +249,15 @@ public class BaseActivity extends AppCompatActivity
         String cities = citiesList.toString();
         //textView.setText(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
         collapsingToolbarLayout.setTitle(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
+    }
+
+    @Override
+    public void setTemperature(String value) {
+        ((TextView) findViewById(R.id.bigTemp)).setText(value);
+    }
+
+    @Override
+    public void setHumidity(String value) {
+        ((TextView) findViewById(R.id.tv_humidity)).setText(value);
     }
 }
