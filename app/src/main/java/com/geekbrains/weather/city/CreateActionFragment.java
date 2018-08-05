@@ -1,4 +1,4 @@
-package com.geekbrains.weather;
+package com.geekbrains.weather.city;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.geekbrains.weather.R;
+import com.geekbrains.weather.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -27,8 +29,7 @@ public class CreateActionFragment extends BaseFragment {
     private EditText editTextCountry;
     private TextInputLayout textInputLayout;
     private RecyclerView recyclerView;
-    private LinearLayout linearLayout;
-    private ArrayList<String> cityList;
+    private ArrayList<SelectedCity> cityList;
 
     @Override
     public void onAttach(Context context) {
@@ -65,7 +66,7 @@ public class CreateActionFragment extends BaseFragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        final CustomAdapter customAdapter = new CustomAdapter(getContext(), cityList, mCallback);
+        final CustomAdapter customAdapter = new CustomAdapter(getContext(), getBaseActivity(), cityList, mCallback);
         recyclerView.setAdapter(customAdapter);
 
         //инициализация edittext и листенер на ключи при взаимодействии с ним, когда мы нашимаем enter у нас опускается клавиатура и запускается WeatherFragment
@@ -106,12 +107,24 @@ public class CreateActionFragment extends BaseFragment {
 
     private void initCountryList() {
         cityList = new ArrayList<>();
-        cityList.add("Moscow");
-        cityList.add("St. Peterburg");
-        cityList.add("Kazan");
+        SelectedCity selectedCity1 = new SelectedCity();
+        selectedCity1.setCity("Moscow");
+        selectedCity1.setSelected(false);
+
+        SelectedCity selectedCity2 = new SelectedCity();
+        selectedCity2.setCity("St. Peterburg");
+        selectedCity2.setSelected(false);
+
+        SelectedCity selectedCity3 = new SelectedCity();
+        selectedCity3.setCity("Kazan");
+        selectedCity3.setSelected(false);
+
+        cityList.add(selectedCity1);
+        cityList.add(selectedCity2);
+        cityList.add(selectedCity3);
     }
 
     public interface OnHeadlineSelectedListener {
-        void onArticleSelected(ArrayList<String> position);
+        void onArticleSelected(SelectedCity selectedCity);
     }
 }

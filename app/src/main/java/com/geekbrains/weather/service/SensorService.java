@@ -9,7 +9,7 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.geekbrains.weather.BaseActivity;
+import com.geekbrains.weather.base.BaseActivity;
 
 public class SensorService extends Service implements SensorEventListener {
     private SensorManager sensorManager;

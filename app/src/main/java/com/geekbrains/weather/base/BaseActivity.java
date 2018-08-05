@@ -1,4 +1,4 @@
-package com.geekbrains.weather;
+package com.geekbrains.weather.base;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,9 +22,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.geekbrains.weather.Constants;
+import com.geekbrains.weather.PreferencesData;
+import com.geekbrains.weather.PreferencesHelper;
+import com.geekbrains.weather.R;
+import com.geekbrains.weather.WeatherFragment;
+import com.geekbrains.weather.city.CreateActionFragment;
+import com.geekbrains.weather.city.SelectedCity;
 import com.geekbrains.weather.service.SensorService;
-
-import java.util.ArrayList;
 
 public class BaseActivity extends AppCompatActivity
         implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
@@ -39,6 +44,7 @@ public class BaseActivity extends AppCompatActivity
     //инициализация переменных
     private FloatingActionButton fab;
     private BroadcastReceiver broadcastReceiver;
+    private PreferencesData preferencesData;
 
 
     @Override
@@ -46,10 +52,10 @@ public class BaseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
 
-        if (savedInstanceState != null) {
-            country = savedInstanceState.getString(NAME);
-            cities = savedInstanceState.getString(CITIES);
-        }
+//        if (savedInstanceState != null) {
+//            country = savedInstanceState.getString(NAME);
+//            cities = savedInstanceState.getString(CITIES);
+//        }
         setContentView(R.layout.activity_base);
 
         initLayout();
@@ -90,8 +96,10 @@ public class BaseActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        preferencesData = new PreferencesData(this);
+        String city = preferencesData.getSharedPreferences(Constants.CITY);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(cities);
+        collapsingToolbarLayout.setTitle(city);
 
 
         fab = findViewById(R.id.fab);
@@ -114,8 +122,8 @@ public class BaseActivity extends AppCompatActivity
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString("NAME", ((TextView) findViewById(R.id.tvUsername)).getText().toString());
-        outState.putString("CITIES", cities);
+        outState.putString(NAME, ((TextView) findViewById(R.id.tvUsername)).getText().toString());
+//        outState.putString("CITIES", cities);
         super.onSaveInstanceState(outState);
     }
 
@@ -232,22 +240,20 @@ public class BaseActivity extends AppCompatActivity
     }
 
 
-    /*public void startWeatherFragment(String country) {
-        //запускаем WeatherFragment и передаем туда country
-        addFragment(WeatherFragment.newInstance(country));
-        //country = country;
-
-    }*/
-
-    public Fragment getAnotherFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.content_frame);
-    }
+//    public void startWeatherFragment(String country) {
+//        //запускаем WeatherFragment и передаем туда country
+//        addFragment(WeatherFragment.newInstance(country));
+//        //country = country;
+//
+//    }
+//
+//    public Fragment getAnotherFragment() {
+//        return getSupportFragmentManager().findFragmentById(R.id.content_frame);
+//    }
 
     @Override
-    public void onArticleSelected(ArrayList<String> citiesList) {
-        String cities = citiesList.toString();
-        //textView.setText(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
-        collapsingToolbarLayout.setTitle(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
+    public void onArticleSelected(SelectedCity selectedCity) {
+        collapsingToolbarLayout.setTitle(selectedCity.getCity());
     }
 
 }

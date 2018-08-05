@@ -4,10 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,21 +11,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import static android.content.Context.SENSOR_SERVICE;
+import com.geekbrains.weather.base.BaseFragment;
 
 public class WeatherFragment extends BaseFragment {
 
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
-    private String country;
-    private SensorEventListener listenerTemperature;
-    private SensorEventListener listenerHumidity;
-    private SensorManager sensorManager;
+//    private String country;
     private LocationManager locationManager;
 
 
@@ -58,10 +50,9 @@ public class WeatherFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            country = getArguments().getString(ARG_COUNTRY);
-        }
-
+//        if (getArguments() != null) {
+//            country = getArguments().getString(ARG_COUNTRY);
+//        }
     }
 
 
@@ -117,5 +108,4 @@ public class WeatherFragment extends BaseFragment {
         });
 
     }
-
 }
