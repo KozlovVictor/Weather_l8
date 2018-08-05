@@ -76,7 +76,7 @@ public class WeatherFragment extends BaseFragment {
 
 //       ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
 //        ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
-        initLocation();
+//        initLocation();
 
     }
 

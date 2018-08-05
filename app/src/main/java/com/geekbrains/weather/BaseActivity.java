@@ -1,12 +1,12 @@
 package com.geekbrains.weather;
 
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,18 +27,18 @@ import com.geekbrains.weather.service.SensorService;
 import java.util.ArrayList;
 
 public class BaseActivity extends AppCompatActivity
-        implements SensorService.CallBack, BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
+        implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
 
     private static final String NAME = "NAME";
     private static final String CITIES = "CITIES";
+    public static final String BROADCAST_ACTION = "BROADCAST_ACTION";
+    public static final String LIGHT_SENSOR_VALUE = "LIGHT_SENSOR_VALUE";
     private static String country;
     private static String cities;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     //инициализация переменных
     private FloatingActionButton fab;
-
-    ServiceConnection serviceConnection;
-    SensorService sensorService;
+    private BroadcastReceiver broadcastReceiver;
 
 
     @Override
@@ -53,21 +54,20 @@ public class BaseActivity extends AppCompatActivity
 
         initLayout();
 
-        serviceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                sensorService = ((SensorService.SensorServiceBinder) iBinder).getService();
-                sensorService.registerClient(BaseActivity.this);
-            }
+        Intent sensorServiceIntent = new Intent(BaseActivity.this, SensorService.class);
+        startService(sensorServiceIntent);
+        IntentFilter serviceFilter = new IntentFilter(BROADCAST_ACTION);
 
+        broadcastReceiver = new BroadcastReceiver() {
             @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-
+            public void onReceive(Context context, Intent intent) {
+                String sensorValue = String.valueOf(intent.getFloatExtra(LIGHT_SENSOR_VALUE, 0));
+                Log.d(LIGHT_SENSOR_VALUE, sensorValue);
             }
         };
-        bindService(new Intent(this, SensorService.class), serviceConnection, 0);
-
+        registerReceiver(broadcastReceiver, serviceFilter);
     }
+
 
     public CollapsingToolbarLayout getCollapsingToolbarLayout() {
         return collapsingToolbarLayout;
@@ -139,9 +139,9 @@ public class BaseActivity extends AppCompatActivity
     }
 
 
-    private void getCurrentFragment() {
+    private Fragment getCurrentFragment() {
         //получаем наименование фрагмента находящегося в контейнере в данных момент
-        getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        return getSupportFragmentManager().findFragmentById(R.id.content_frame);
     }
 
     @Override
@@ -241,7 +241,6 @@ public class BaseActivity extends AppCompatActivity
 
     public Fragment getAnotherFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
     }
 
     @Override
@@ -251,13 +250,4 @@ public class BaseActivity extends AppCompatActivity
         collapsingToolbarLayout.setTitle(cities.substring(cities.indexOf("[") + 1, cities.indexOf("]")));
     }
 
-    @Override
-    public void setTemperature(String value) {
-        ((TextView) findViewById(R.id.bigTemp)).setText(value);
-    }
-
-    @Override
-    public void setHumidity(String value) {
-        ((TextView) findViewById(R.id.tv_humidity)).setText(value);
-    }
 }
