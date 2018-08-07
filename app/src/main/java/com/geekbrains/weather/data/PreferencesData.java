@@ -1,10 +1,8 @@
-package com.geekbrains.weather;
+package com.geekbrains.weather.data;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.geekbrains.weather.base.BaseActivity;
 
 public class PreferencesData implements PreferencesHelper {
     private SharedPreferences sharedPreferences;

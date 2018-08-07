@@ -22,20 +22,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.geekbrains.weather.Constants;
-import com.geekbrains.weather.PreferencesData;
-import com.geekbrains.weather.PreferencesHelper;
+import com.geekbrains.weather.data.Constants;
+import com.geekbrains.weather.data.PreferencesData;
 import com.geekbrains.weather.R;
 import com.geekbrains.weather.WeatherFragment;
 import com.geekbrains.weather.city.CreateActionFragment;
 import com.geekbrains.weather.city.SelectedCity;
+import com.geekbrains.weather.retrofit.controller.WeatherManager;
 import com.geekbrains.weather.service.SensorService;
 
 public class BaseActivity extends AppCompatActivity
         implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener, CreateActionFragment.OnHeadlineSelectedListener {
 
     private static final String NAME = "NAME";
-    private static final String CITIES = "CITIES";
+//    private static final String CITIES = "CITIES";
     public static final String BROADCAST_ACTION = "BROADCAST_ACTION";
     public static final String LIGHT_SENSOR_VALUE = "LIGHT_SENSOR_VALUE";
     private static String country;
@@ -60,6 +60,8 @@ public class BaseActivity extends AppCompatActivity
 
         initLayout();
 
+        initOpenWeather();
+
         Intent sensorServiceIntent = new Intent(BaseActivity.this, SensorService.class);
         startService(sensorServiceIntent);
         IntentFilter serviceFilter = new IntentFilter(BROADCAST_ACTION);
@@ -72,6 +74,12 @@ public class BaseActivity extends AppCompatActivity
             }
         };
         registerReceiver(broadcastReceiver, serviceFilter);
+    }
+
+    private void initOpenWeather() {
+        WeatherManager weatherManager = new WeatherManager();
+        weatherManager.initRetrofit();
+        weatherManager.requestRetrofit("Omsk,ru", "63968e5d57da501d0fa48b5e3e4774e2");
     }
 
 
