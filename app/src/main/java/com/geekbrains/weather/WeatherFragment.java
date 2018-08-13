@@ -3,6 +3,7 @@ package com.geekbrains.weather;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -68,7 +69,6 @@ public class WeatherFragment extends BaseFragment {
 //       ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
 //        ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
 //        initLocation();
-
     }
 
     @SuppressLint("MissingPermission")

@@ -10,4 +10,6 @@
     <color name="purpleDark">#5b1566</color>
     <color name="action">#000000</color>
     <color name="white">#ffffff</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

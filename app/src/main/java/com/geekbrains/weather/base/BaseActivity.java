@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.geekbrains.weather.SMSReceiver;
 import com.geekbrains.weather.data.Constants;
 import com.geekbrains.weather.data.PreferencesData;
 import com.geekbrains.weather.R;
@@ -64,13 +65,13 @@ public class BaseActivity extends AppCompatActivity
 
         Intent sensorServiceIntent = new Intent(BaseActivity.this, SensorService.class);
         startService(sensorServiceIntent);
-        IntentFilter serviceFilter = new IntentFilter(BROADCAST_ACTION);
 
+        IntentFilter serviceFilter = new IntentFilter(BROADCAST_ACTION);
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String sensorValue = String.valueOf(intent.getFloatExtra(LIGHT_SENSOR_VALUE, 0));
-                Log.d(LIGHT_SENSOR_VALUE, sensorValue);
+//                Log.d(LIGHT_SENSOR_VALUE, sensorValue);
             }
         };
         registerReceiver(broadcastReceiver, serviceFilter);
