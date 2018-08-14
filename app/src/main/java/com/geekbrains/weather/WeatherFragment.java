@@ -15,15 +15,17 @@ import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.geekbrains.weather.base.BaseFragment;
 
-public class WeatherFragment extends BaseFragment {
+public class WeatherFragment extends BaseFragment implements SMSReceiver.SMSCallback {
 
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
 //    private String country;
     private LocationManager locationManager;
+    EditText SMSCode;
 
 
     public WeatherFragment() {
@@ -69,6 +71,7 @@ public class WeatherFragment extends BaseFragment {
 //       ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
 //        ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
 //        initLocation();
+        SMSCode = view.findViewById(R.id.SMSText);
     }
 
     @SuppressLint("MissingPermission")
@@ -107,5 +110,10 @@ public class WeatherFragment extends BaseFragment {
             }
         });
 
+    }
+
+    @Override
+    public void SMSReceived(String SMSText) {
+        SMSCode.setText(SMSText);
     }
 }

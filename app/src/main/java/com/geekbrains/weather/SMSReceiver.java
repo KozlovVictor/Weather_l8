@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsMessage;
 
-import com.geekbrains.weather.base.BaseActivity;
-
 public class SMSReceiver extends BroadcastReceiver {
+    SMSCallback smsCallback;
+
     Context context;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
@@ -20,8 +21,12 @@ public class SMSReceiver extends BroadcastReceiver {
             }
             String bodyText = messages[0].getMessageBody();
             //TODO send bodyText over Callback
+            smsCallback.SMSReceived(bodyText);
             abortBroadcast();
         }
     }
 
+    public interface SMSCallback {
+        void SMSReceived(String SMSText);
+    }
 }
