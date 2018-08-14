@@ -17,10 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geekbrains.weather.base.BaseFragment;
 
-public class WeatherFragment extends BaseFragment implements SMSReceiver.SMSCallback {
+public class WeatherFragment extends BaseFragment implements SMSReceiver.SMSCallback{
 
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
 //    private String country;
@@ -72,6 +73,7 @@ public class WeatherFragment extends BaseFragment implements SMSReceiver.SMSCall
 //        ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
 //        initLocation();
         SMSCode = view.findViewById(R.id.SMSText);
+        Toast.makeText(getContext(), "HERE", Toast.LENGTH_LONG).show();
     }
 
     @SuppressLint("MissingPermission")
